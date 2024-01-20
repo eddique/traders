@@ -3,7 +3,7 @@ import logging
 import requests
 import time
 from typing import Any, List, Optional
-
+from lib import utils
 
 ROOT = 'https://efdsearch.senate.gov'
 LANDING_PAGE_URL = '{}/search/home/'.format(ROOT)
@@ -28,7 +28,6 @@ REPORT_COL_NAMES = [
 ]
 
 LOGGER = logging.getLogger(__name__)
-
 
 def add_rate_limit(f):
     def with_rate_limit(*args, **kw):
@@ -71,20 +70,20 @@ def senator_reports(client: requests.Session) -> List[List[str]]:
         reports = reports_api(client, idx, token)
     return all_reports
 
-
 def reports_api(
     client: requests.Session,
     offset: int,
-    token: str
+    token: str,
 ) -> List[List[str]]:
     """ Query the periodic transaction reports API. """
+    start, end = utils.generate_range()
     login_data = {
         'start': str(offset),
         'length': str(BATCH_SIZE),
         'report_types': '[11]',
         'filer_types': '[]',
-        'submitted_start_date': '12/27/2023 00:00:00',
-        'submitted_end_date': '12/28/2023 23:00:00',
+        'submitted_start_date': start,
+        'submitted_end_date': end,
         'candidate_state': '',
         'senator_state': '',
         'office_id': '',
@@ -96,9 +95,7 @@ def reports_api(
     response = client.post(REPORTS_URL,
                            data=login_data,
                            headers={'Referer': SEARCH_PAGE_URL})
-    print(response)
     return response.json()['data']
-
 
 def _tbody_from_link(client: requests.Session, link: str) -> Optional[Any]:
     """
@@ -118,7 +115,7 @@ def _tbody_from_link(client: requests.Session, link: str) -> Optional[Any]:
         return None
     return tbodies[0]
 
-def report_txs(client: requests.Session, row: List[str]) -> List[List[str]]:
+def report_txs(client: requests.Session, row: List[str]) -> List[dict]:
     """
     Convert a row from the periodic transaction reports API to a DataFrame
     of transactions.
@@ -137,25 +134,26 @@ def report_txs(client: requests.Session, row: List[str]) -> List[List[str]]:
             cols[1], cols[3], cols[4], cols[5], cols[6], cols[7]
         if asset_type != 'Stock' and ticker.strip() in ('--', ''):
             continue
-        txs.append([
-            first,
-            last,
-            tx_date,
-            ticker,
-            asset_name,
-            asset_type,
-            order_type,
-            tx_amount
-        ])
+        txs.append({
+            "first_name": first,
+            "last_name": last,
+            "tx_date": tx_date,
+            "ticker": ticker,
+            "asset_name": asset_name,
+            "asset_type": asset_type,
+            "order_type": order_type,
+            "tx_amount": tx_amount,
+            "received": date_received
+        })
     return txs
 
-def main() -> List[List[str]]:
+def fetch_transactions():
     LOGGER.info('Initializing client')
     client = requests.Session()
     client.get = add_rate_limit(client.get)
     client.post = add_rate_limit(client.post)
     reports = senator_reports(client)
-    print(reports)
+
     all_txs = []
     for i, row in enumerate(reports):
         if i % 10 == 0:
@@ -163,10 +161,3 @@ def main() -> List[List[str]]:
         txs = report_txs(client, row)
         all_txs.extend(txs)
     return all_txs
-
-
-if __name__ == '__main__':
-    log_format = '[%(asctime)s %(levelname)s] %(message)s'
-    logging.basicConfig(level=logging.INFO, format=log_format)
-    senator_txs = main()
-    print(senator_txs)
