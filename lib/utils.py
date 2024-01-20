@@ -34,13 +34,33 @@ def set_metadata(start: str):
 def format_txs(txs: list[dict[str]]) -> list[str]:
     messages = []
     for tx in txs:
-        message = f"""New Trade Alert
-name: {tx["first_name"]} {tx["last_name"]}
-ticker: ${tx["ticker"]}
-order: {tx["order_type"]}
-amount: {tx["tx_amount"]}
+        message = f"""New Trade Alert {order_emoji(tx["order_type"])} {amount_emoji(tx["tx_amount"])}
+{tx["first_name"]} {tx["last_name"]}
+${tx["ticker"]}
+{tx["order_type"]}
+{tx["tx_amount"]}
 transaction date: {tx["tx_date"]}
 reported on: {tx["received"]}
+#traders
 """
         messages.append(message)
     return messages
+
+def order_emoji(order_type: str) -> str:
+    return "📉" if "Sale" in order_type else "📈"
+    
+def amount_emoji(tx_amount: str) -> str:
+    emoji = ""
+    if "$15,000" in tx_amount:
+        emoji = "🧐"
+    elif "$50,000" in tx_amount:
+        emoji = "🧐🧐"
+    elif "$100,000" in tx_amount:
+        emoji = "🧐🧐🧐"
+    elif "$250,000" in tx_amount:
+        emoji = "🧐🧐🧐🧐"
+    elif "$1,000,000" in tx_amount:
+        emoji = "🧐🧐🧐🧐🧐"
+    else:
+        emoji = "🧐🧐🧐🧐🧐"
+    return emoji
