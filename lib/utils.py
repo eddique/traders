@@ -41,14 +41,14 @@ ${tx["ticker"]}
 {tx["tx_amount"]}
 transaction date: {tx["tx_date"]}
 reported on: {tx["received"]}
-#traders
+#traders #{tx["first_name"]}{tx["last_name"]} #{tx["ticker"]}
 """
         messages.append(message)
     return messages
 
 def order_emoji(order_type: str) -> str:
     return "📉" if "Sale" in order_type else "📈"
-    
+
 def amount_emoji(tx_amount: str) -> str:
     emoji = ""
     if "$15,000" in tx_amount:
