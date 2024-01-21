@@ -50,7 +50,7 @@ def order_emoji(order_type: str) -> str:
     return "📉" if "Sale" in order_type else "📈"
 
 def amount_emoji(tx_amount: str) -> str:
-    emoji = ""
+    # emoji = ""
     if "$15,000" in tx_amount:
         emoji = "🧐"
     elif "$50,000" in tx_amount:
@@ -62,5 +62,5 @@ def amount_emoji(tx_amount: str) -> str:
     elif "$1,000,000" in tx_amount:
         emoji = "🧐🧐🧐🧐🧐"
     else:
-        emoji = "🧐🧐🧐🧐🧐"
+        emoji = "🧐"
     return emoji
