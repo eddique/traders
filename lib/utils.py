@@ -7,11 +7,11 @@ PATH="metadata.csv"
 def generate_range() -> tuple[str]:
     return (start(), now())
 
-
 def now() -> str:
     now = datetime.now()
     formatted_date = now.strftime("%m/%d/%Y %H:%M:%S")
     return formatted_date
+    
 def start() -> str:
     if os.path.exists(PATH):
         with open(PATH, mode="r", newline="", encoding="utf-8") as file:
@@ -50,7 +50,6 @@ def order_emoji(order_type: str) -> str:
     return "📉" if "Sale" in order_type else "📈"
 
 def amount_emoji(tx_amount: str) -> str:
-    # emoji = ""
     if "$15,000" in tx_amount:
         emoji = "🧐"
     elif "$50,000" in tx_amount:

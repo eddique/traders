@@ -1,4 +1,5 @@
 from lib import trades, twitter, utils
+
 def report_txs():
     try:
         txs = trades.fetch_transactions()
