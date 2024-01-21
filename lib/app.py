@@ -9,3 +9,9 @@ def report_txs():
         utils.set_metadata(utils.now())
     except Exception as e:
         print(e)
+
+def check():
+    txs = trades.fetch_transactions()
+    msgs = utils.format_txs(txs)
+    for msg in msgs:
+        print(msg)
