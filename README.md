@@ -38,7 +38,7 @@ pip install -r requirements.txt
 VISUAL=nvim crontab -e
 ```
 ```sh
-0 9 * * * ~/Desktop/traders/env/bin/python ~/Desktop/traders/cli.py
-0 12 * * * ~/Desktop/traders/env/bin/python ~/Desktop/traders/cli.py
-0 17 * * * ~/Desktop/traders/env/bin/python ~/Desktop/traders/cli.py
+0 9 * * * ~/Desktop/traders/run.sh
+0 12 * * * ~/Desktop/traders/run.sh
+0 17 * * * ~/Desktop/traders/run.sh
 ```
