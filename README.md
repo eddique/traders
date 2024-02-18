@@ -10,6 +10,13 @@ export ACCESS_TOKEN=<Your Twitter access token>
 export ACCESS_TOKEN_SECRET=<Your Twitter access token secret>
 ```
 
+# Quick Start
+```sh
+python3 -m venv env
+source env/bin/activate
+pip install -r requirements.txt
+```
+
 # Usage
 
 The default command will check for the last fetched date, and query the period for public financial disclosures from the last fetched date (or 24 hours prior if not exists) until execution time.
@@ -22,23 +29,20 @@ python cli.py -c
 ```
 
 # Configuration
-Running locally
+
+Clone the repo and copy the run script to the root directory
 ```sh
 mkdir ~/Desktop/traders && cd ~/Desktop/traders
-```
-```sh
 git clone https://github.com/eddique/traders .
+cp traders.sh ~/
 ```
-```sh
-virtualenv env
-source env/bin/activate
-pip install -r requirements.txt
-```
+
+Open crontab and set cronjobs for periodic runs
 ```sh
 VISUAL=nvim crontab -e
 ```
 ```sh
-0 9 * * * ~/Desktop/traders/run.sh
-0 12 * * * ~/Desktop/traders/run.sh
-0 17 * * * ~/Desktop/traders/run.sh
+0 9 * * * ~/traders.sh > ~/Desktop/traders/cron.log 2>&1
+0 12 * * * ~/traders.sh > ~/Desktop/traders/cron.log 2>&1
+0 17 * * * ~/traders.sh > ~/Desktop/traders/cron.log 2>&1
 ```
