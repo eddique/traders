@@ -41,7 +41,7 @@ ${tx["ticker"]}
 {tx["tx_amount"]}
 transaction date: {tx["tx_date"]}
 reported on: {tx["received"]}
-#traders #{tx["first_name"]}{tx["last_name"]} #{tx["ticker"]}
+#traders #{tx["first_name"].split(" ")[0]}{tx["last_name"]} #{tx["ticker"]}
 """
         messages.append(message)
     return messages
@@ -54,9 +54,9 @@ def amount_emoji(tx_amount: str) -> str:
         emoji = "🧐"
     elif "$50,000" in tx_amount:
         emoji = "🧐🧐"
-    elif "$100,000" in tx_amount:
-        emoji = "🧐🧐🧐"
     elif "$250,000" in tx_amount:
+        emoji = "🧐🧐🧐"
+    elif "$500,000" in tx_amount:
         emoji = "🧐🧐🧐🧐"
     elif "$1,000,000" in tx_amount:
         emoji = "🧐🧐🧐🧐🧐"
